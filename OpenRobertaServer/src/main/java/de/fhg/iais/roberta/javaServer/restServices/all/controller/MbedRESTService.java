@@ -1,14 +1,10 @@
     package de.fhg.iais.roberta.javaServer.restServices.all.controller;
 
-    import com.sun.org.apache.xalan.internal.xsltc.cmdline.Compile;
     import de.fhg.iais.roberta.factory.RobotFactory;
     import de.fhg.iais.roberta.generated.restEntities.FullRestRequest;
-    import de.fhg.iais.roberta.generated.restEntities.InitRequest;
     import de.fhg.iais.roberta.javaServer.provider.OraData;
     import de.fhg.iais.roberta.persistence.util.DbSession;
     import de.fhg.iais.roberta.persistence.util.HttpSessionState;
-    import de.fhg.iais.roberta.util.Key;
-    import de.fhg.iais.roberta.util.KeyVal;
     import de.fhg.iais.roberta.util.UtilForREST;
     import de.fhg.iais.roberta.worker.CalliopeCompilerWorker;
     import de.fhg.iais.roberta.worker.CompileRequest;
@@ -48,15 +44,16 @@
             RobotFactory robotFactory = httpSessionState.getRobotFactory();
 
 
+
             CompileRequest request = CompileRequest.from_json(fullRequest.getData());
 
             CompileResponse response = CalliopeCompilerWorker.runBuild(
                     request,
                     robotFactory.getSourceCodeFileExtension(),
                     robotFactory.getBinaryFileExtension(),
-                    compilerBinDir,
-                    compilerResourcesDir,
-                    tempDir);
+                    robotFactory.getPluginProperties().getCompilerBinDir(),
+                    robotFactory.getPluginProperties().getCompilerResourceDir(),
+                    robotFactory.getPluginProperties().getTempDir());
 
             // CalliopeCompilerWorker.runBuild()
             return Response.ok(response.to_json()).build();
