@@ -9,9 +9,11 @@
     import de.fhg.iais.roberta.worker.CalliopeCompilerWorker;
     import de.fhg.iais.roberta.worker.CompileRequest;
     import de.fhg.iais.roberta.worker.CompileResponse;
+    import org.json.JSONObject;
     import org.slf4j.Logger;
     import org.slf4j.LoggerFactory;
 
+    import javax.print.attribute.standard.Media;
     import javax.ws.rs.*;
     import javax.ws.rs.core.MediaType;
     import javax.ws.rs.core.Response;
@@ -26,6 +28,13 @@
         static String compilerBinDir = "/";
         static String compilerResourcesDir = "/";
         static String tempDir = "/tmp";
+
+
+        @Path("/health")
+        @GET
+        public Response health() {
+            return Response.ok().build();
+        }
 
         @Path("/calliope/compilerJob")
         @POST
@@ -43,10 +52,8 @@
                     fullRequest, true);
             RobotFactory robotFactory = httpSessionState.getRobotFactory();
 
-
-
-            CompileRequest request = CompileRequest.from_json(fullRequest.getData());
-
+            JSONObject requestBody = fullRequest.getData();
+            CompileRequest request = CompileRequest.from_json(requestBody.getJSONObject("data"));
             CompileResponse response = CalliopeCompilerWorker.runBuild(
                     request,
                     robotFactory.getSourceCodeFileExtension(),

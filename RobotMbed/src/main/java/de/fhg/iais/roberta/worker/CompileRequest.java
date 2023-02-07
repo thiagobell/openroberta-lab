@@ -21,14 +21,14 @@ final public class CompileRequest {
         this.isNativeEditorCode = isNativeEditorCode;
     }
 
-    public String to_json() {
+    public JSONObject to_json() {
         JSONObject jo = new JSONObject();
         jo.put("crossCompilerSource", this.crossCompilerSource);
         jo.put("robot", this.robot);
         jo.put("token", this.token);
         jo.put("programName", this.programName);
         jo.put("isNativeEditorCode", this.isNativeEditorCode);
-        return jo.toString();
+        return jo;
     }
 
     public static CompileRequest from_json(String compileRequestJson) {
